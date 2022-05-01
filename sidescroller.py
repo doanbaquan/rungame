@@ -21,7 +21,6 @@ clock = pygame.time.Clock()
 
 bg_img = pygame.image.load('background.jpg')
 bg_img = pygame.transform.scale(bg_img,(SCREEN_WIDTH, SCREEN_HEIGHT))
-ground = pygame.Rect(0,445,800,200)
 
 class Player:
     def __init__(self):
@@ -111,13 +110,19 @@ class Obstacle:
 
 obstacles = []
 player = Player()
+bg_imgX = 0
 
 while True:
     clock.tick(100)
     screen.fill((255,255,255))
 
-    pygame.draw.rect(screen,(61,149,67), ground)
-    screen.blit(bg_img,(0,0))
+    screen.blit(bg_img,(bg_imgX,0))
+    screen.blit(bg_img, (SCREEN_WIDTH + bg_imgX,0))
+    if bg_imgX ==-SCREEN_WIDTH:
+        screen.blit(bg_img,(SCREEN_WIDTH+bg_imgX, 0))
+        bg_imgX = 0
+    bg_imgX-=1
+    
     if len(obstacles) == 0:
         Obstacle(3.5)
     player.move()
