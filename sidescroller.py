@@ -36,7 +36,7 @@ bg_img = pygame.transform.scale(bg_img,(SCREEN_WIDTH, SCREEN_HEIGHT))
 #object that user plays as, when spacebar is pressed, the skater jumps
 class Player:
     #variable initialization
-    def __init__(self):
+    def __init__(self, lives):
         self.width = 75
         self.height = 120
         self.x = 350
@@ -45,38 +45,28 @@ class Player:
         self.falling = False
         self.jump_velocity = 3
         self.points = 0
+        self.lives = lives
         self.rect = pygame.Rect(self.x,self.y,self.width,self.height)
+        self.collided = False
 
         #skater animations and font
-        
         self.skaterjump = pygame.image.load('skaterjump.png')
         self.skaterfall = pygame.image.load('skaterfall.png')
         self.skaterdefault = pygame.image.load('skaterdefault.png')
+        
+    #checks if Player has collided with Object
+    def collide(self):
+        for obstacle in obstacles:
+            if self.rect.colliderect(obstacle.rect) and self.collided == False:
+                #sets the speed of obstacle and jump to zero so that position of either does not change
+                self.collided = True
+                self.lives -= 1
+            elif self.rect.colliderect(obstacle.rect)==False:
+                self.collided = False
 
     #Sets jumping to true
     def jump(self):
         self.jumping = True
-
-    #checks if Player has collided with Object
-    def collide(self):
-        for obstacle in obstacles:
-            if self.rect.colliderect(obstacle.rect):
-                #sets the speed of obstacle and jump to zero so that position of either does not change
-                obstacle.speed = 0
-                self.jump_velocity = 0  #jump_velocity variable also acts as indicator of game over for ending text to appear
-
-                #game over end text
-                text2 = font.render("GAME OVER", True, (0, 0, 0))
-                textRect2 = text2.get_rect()
-                textRect2.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT*0.25)
-                screen.blit(text2, textRect2)
-
-                #final score end text
-                text = font.render("Final Score: " + str(self.points), True, (0, 0, 0))
-                textRect = text.get_rect()
-                textRect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT*0.3)
-                screen.blit(text, textRect)
-                break
 
     #Moves Player up when jumping is true, and lowers Player once y-value reaches 140px
     def move(self):
@@ -109,9 +99,15 @@ class Player:
             self.points += 1
 
         text = font.render("Score: " + str(self.points), True, (0, 0, 0))
+        lifecount = font.render("Lives: " + str(self.lives), True, (0, 0, 0))
+        
         textRect = text.get_rect()
-        textRect.center = (100, 50)
+        textRect.center = (100, 100)
         screen.blit(text, textRect)
+
+        textRect2 = text.get_rect()
+        textRect2.center = (100, 50)
+        screen.blit(lifecount, textRect2)
 
 #obstacle class that takes a parameter of obstacle speed
 class Obstacle:
@@ -136,35 +132,51 @@ class Obstacle:
             obstacles.remove(self)
 
             
-
 obstacles = []
-player = Player()
+player = Player(3)
 
 #indexing position of the background
 bg_imgX = 0
 
 while True:
+    
     clock.tick(100)
 
-    #continuous background that loops infinitely
-    screen.blit(bg_img,(bg_imgX,0))
-    screen.blit(bg_img, (SCREEN_WIDTH + bg_imgX,0))
-    if bg_imgX == -SCREEN_WIDTH:
-        screen.blit(bg_img,(SCREEN_WIDTH+bg_imgX, 0))
-        bg_imgX = 0
-    bg_imgX-=0.5
+    if player.lives == 0:
+        obstacle.speed = 0
+        player.jump_velocity = 0  #jump_velocity variable also acts as indicator of game over for ending text to appear
 
-    #Obstacle generation
-    if len(obstacles) == 0:
-        Obstacle(3)
+        #game over end text
+        text2 = font.render("GAME OVER", True, (0, 0, 0))
+        textRect2 = text2.get_rect()
+        textRect2.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT*0.25)
+        screen.blit(text2, textRect2)
 
-    player.move()
-    player.collide()
-    player.score()
+        #final score end text
+        text = font.render("Final Score: " + str(player.points), True, (0, 0, 0))
+        textRect = text.get_rect()
+        textRect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT*0.3)
+        screen.blit(text, textRect)
+    else:
+        #continuous background that loops infinitely
+        screen.blit(bg_img,(bg_imgX,0))
+        screen.blit(bg_img, (SCREEN_WIDTH + bg_imgX,0))
+        if bg_imgX == -SCREEN_WIDTH:
+            screen.blit(bg_img,(SCREEN_WIDTH+bg_imgX, 0))
+            bg_imgX = 0
+        bg_imgX-=0.5
 
-    #Obstacle motion
-    for obstacle in obstacles:
-        obstacle.move()
+        #Obstacle generation
+        if len(obstacles) == 0:
+            Obstacle(3)
+
+        player.move()
+        player.collide()
+        player.score()
+
+        #Obstacle motion
+        for obstacle in obstacles:
+            obstacle.move()
 
     for event in pygame.event.get():
         #Quit
