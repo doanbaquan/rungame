@@ -23,7 +23,6 @@ This repository contains a simple side-scrolling game built using Python. The pl
 ### Prerequisites
 
 - You need to have Python installed on your machine.
-- Make sure you have the required libraries, like `pygame`, installed.
 
 ### Installation
 
@@ -39,12 +38,6 @@ git clone https://github.com/yourusername/sidescroller-game.git
 cd sidescroller-game
 ```
 
-3. Install any dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
 ### Running the Game
 
 To start the game, run the `sidescroller.py` file:
@@ -56,25 +49,11 @@ python sidescroller.py
 ## How to Play
 
 - **Move**: The skater will automatically move forward.
-- **Jump**: Press the designated key to make the skater jump over obstacles.
-- **Avoid obstacles**: Make sure to jump over the stop signs to keep the game going.
+- **Jump**: Press `Space` to make the skater jump over obstacles.
+- **Avoid obstacles**: Jump over the stop signs to keep the game going.
 
-## Assets
-
-- **Background Image:** `background.jpg`
-- **Character Sprites:**
-  - `skaterdefault.png`
-  - `skaterfall.png`
-  - `skaterjump.png`
-- **Obstacle Sprite:** `stopsign.png`
 
 ## Contributing
 
 Feel free to fork this repository and submit pull requests if you want to add new features or fix bugs.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
-
-You can now copy this into your `README.md` file for your GitHub repo. Let me know if you need any adjustments!# rungame
